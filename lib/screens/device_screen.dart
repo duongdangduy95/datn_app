@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../core/api_client.dart';
 import '../models/device.dart';
 import '../services/device_service.dart';
 import 'add_device_screen.dart';
 import 'device_detail_screen.dart';
 import 'login_screen.dart';
+import '../services/audio_recorder_service.dart';
+import '../services/voice_service.dart';
+import 'package:dio/dio.dart';
+import '../services/permission_service.dart';
+import '../models/voice_control_response.dart';
 
 class DeviceScreen extends StatefulWidget {
   const DeviceScreen({super.key});
@@ -18,6 +24,10 @@ class _DeviceScreenState extends State<DeviceScreen> {
   List<Device> devices = [];
   bool loading = true;
 
+  final AudioRecorderService audioRecorderService = AudioRecorderService();
+
+  final VoiceService voiceService = VoiceService(ApiClient.dio);
+
   @override
   void initState() {
     super.initState();
@@ -25,29 +35,60 @@ class _DeviceScreenState extends State<DeviceScreen> {
   }
 
 
+  Future<void> voiceControl() async {
 
+    final granted = await PermissionService.requestMicPermission();
+
+    if (!granted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Bạn chưa cấp quyền micro"),
+        ),
+      );
+      return;
+    }
+
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Đang ghi âm 5 giây...")),
+      );
+
+      final audioPath = await audioRecorderService.record5Seconds();
+
+      if (audioPath == null) return;
+
+      final result = await voiceService.controlByVoice(audioPath);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message)), // ✅ đúng
+      );
+
+      if (result.success) {
+        await loadData();
+      }
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
   Future<void> loadData() async {
     setState(() {
       loading = true;
     });
-    devices = await DeviceService().getDevices();
 
-    for (final d in devices) {
-      print(
-          "DEVICE=${d.name} STATUS=${d.status}"
-      );
-    }
-
-    setState(() {});
     try {
       devices = await DeviceService().getDevices();
+
+      for (final d in devices) {
+        print("DEVICE=${d.name} STATUS=${d.status}");
+      }
+
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
+        SnackBar(content: Text(e.toString())),
       );
     }
 
@@ -202,26 +243,45 @@ class _DeviceScreenState extends State<DeviceScreen> {
         ],
       ),
 
-      floatingActionButton:
-      FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-        ),
-        onPressed: () async {
-          final result =
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) =>
-              const AddDeviceScreen(),
-            ),
-          );
+      floatingActionButton: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
 
-          if (result == true) {
-            loadData();
-          }
-        },
-      ),
+        FloatingActionButton(
+          heroTag: "voice",
+          onPressed: voiceControl,
+          child: const Icon(
+            Icons.mic,
+          ),
+        ),
+
+        const SizedBox(
+          height: 12,
+        ),
+
+        FloatingActionButton(
+          heroTag: "add",
+          child: const Icon(
+            Icons.add,
+          ),
+          onPressed: () async {
+
+            final result =
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                const AddDeviceScreen(),
+              ),
+            );
+
+            if (result == true) {
+              loadData();
+            }
+          },
+        ),
+      ],
+    ),
 
       body: loading
           ? const Center(
