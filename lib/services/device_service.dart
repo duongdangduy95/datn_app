@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../core/api_client.dart';
 import '../models/device.dart';
 import '../models/device_guest.dart';
+import '../models/device_schedule.dart';
 
 class DeviceService {
 
@@ -102,4 +103,30 @@ class DeviceService {
       "/api/devices/$deviceId/guest/$guestUserId",
     );
   }
+
+  Future<DeviceSchedule> createSchedule(
+      Map<String, dynamic> body) async {
+
+    final response = await ApiClient.dio.post(
+      "/api/schedule",
+      data: body,
+    );
+
+    return DeviceSchedule.fromJson(response.data);
+  }
+
+  Future<List<dynamic>> getSchedules(int deviceId) async {
+    final response = await ApiClient.dio.get(
+      "/api/schedule/device/$deviceId",
+    );
+
+    return response.data;
+  }
+
+  Future<void> deleteSchedule(int id) async {
+    await ApiClient.dio.delete(
+      "/api/schedule/$id",
+    );
+  }
+
 }

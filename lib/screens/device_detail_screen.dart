@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/device.dart';
 import '../models/device_guest.dart';
 import '../services/device_service.dart';
+import 'schedule_screen.dart';
 
 class DeviceDetailScreen extends StatefulWidget {
   final Device device;
@@ -297,8 +298,24 @@ class _DeviceDetailScreenState
             onTap: shareDevice,
           ),
 
-          const Divider(),
+          // const Divider(),
+          ListTile(
+            leading: const Icon(Icons.schedule),
+            title: const Text("Lập lịch tự động"),
+            subtitle: const Text("Bật/Tắt thiết bị theo giờ"),
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ScheduleScreen(
+                    deviceId: widget.device.id,
+                  ),
+                ),
+              );
+            },
+          ),
 
+          const Divider(),
           const Padding(
             padding:
             EdgeInsets.all(16),
