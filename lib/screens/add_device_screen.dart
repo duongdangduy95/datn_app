@@ -23,15 +23,12 @@ class _AddDeviceScreenState
   TextEditingController();
 
   String pairToken = "";
-
   bool loading = false;
-
   bool loadingToken = true;
 
   @override
   void initState() {
     super.initState();
-
     loadPairToken();
   }
 
@@ -39,7 +36,7 @@ class _AddDeviceScreenState
 
     try {
 
-      print("🚀 CREATE PAIR TOKEN");
+      print("CREATE PAIR TOKEN");
 
       final response =
       await ApiClient.dio.post(
@@ -50,39 +47,23 @@ class _AddDeviceScreenState
         ),
       );
 
-      print(
-        "TOKEN RESPONSE = ${response.data}",
-      );
+      print("TOKEN RESPONSE = ${response.data}",);
 
       setState(() {
-
-        pairToken =
-            response.data.toString();
-
+        pairToken = response.data.toString();
         loadingToken = false;
       });
 
-      print(
-        "PAIR TOKEN = $pairToken",
-      );
+      print("PAIR TOKEN = $pairToken",);
 
     } catch (e) {
+      print("PAIR TOKEN ERROR = $e",);
 
-      print(
-        "PAIR TOKEN ERROR = $e",
-      );
-
-      setState(() {
-        loadingToken = false;
-      });
+      setState(() {loadingToken = false;});
 
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-          SnackBar(
-            content: Text(
-              e.toString(),
-            ),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString(),),
           ),
         );
       }
@@ -93,8 +74,7 @@ class _AddDeviceScreenState
 
     if (pairToken.isEmpty) {
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             "Chưa tạo được Pair Token",
@@ -107,39 +87,24 @@ class _AddDeviceScreenState
 
     try {
 
-      setState(() {
-        loading = true;
-      });
+      setState(() {loading = true;});
 
       final dio = Dio();
 
-      final formData =
-      FormData.fromMap({
+      final formData = FormData.fromMap({"ssid": ssidController.text, "pass": passwordController.text, "token": pairToken,});
 
-        "ssid":
-        ssidController.text,
+      print("SEND TOKEN = $pairToken",);
 
-        "pass":
-        passwordController.text,
 
-        "token":
-        pairToken,
-      });
-
-      print(
-        "SEND TOKEN = $pairToken",
-      );
-
-      // SỬA ĐOẠN NÀY TRONG FLUTTER
       await dio.post(
         "http://192.168.4.1/save",
         data: {
           "ssid": ssidController.text,
           "pass": passwordController.text,
-          "token": pairToken, // Gửi key là 'token'
+          "token": pairToken,
         },
         options: Options(
-          contentType: Headers.formUrlEncodedContentType, // Ép kiểu url-encoded
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
@@ -154,18 +119,14 @@ class _AddDeviceScreenState
           ),
         );
 
-        Navigator.pop(
-          context,
-          true,
-        );
+        Navigator.pop(context, true,);
       }
 
     } catch (e) {
 
       if (mounted) {
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               e.toString(),
@@ -177,10 +138,7 @@ class _AddDeviceScreenState
     } finally {
 
       if (mounted) {
-
-        setState(() {
-          loading = false;
-        });
+        setState(() {loading = false;});
       }
     }
   }
@@ -189,7 +147,6 @@ class _AddDeviceScreenState
   void dispose() {
 
     ssidController.dispose();
-
     passwordController.dispose();
 
     super.dispose();
@@ -199,16 +156,11 @@ class _AddDeviceScreenState
   Widget build(
       BuildContext context) {
 
-    print(
-      "BUILD TOKEN = $pairToken",
-    );
+    print("BUILD TOKEN = $pairToken",);
 
     return Scaffold(
-
       appBar: AppBar(
-        title: const Text(
-          "Thêm thiết bị",
-        ),
+        title: const Text("Thêm thiết bị",),
       ),
 
       body: Padding(
@@ -230,12 +182,9 @@ class _AddDeviceScreenState
               ),
             ),
 
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8,),
 
             Container(
-
               width:
               double.infinity,
 
@@ -254,20 +203,9 @@ class _AddDeviceScreenState
                 ),
               ),
 
-              child: loadingToken
+              child: loadingToken ? const Text("Đang tạo...",) : SelectableText(pairToken,),),
 
-                  ? const Text(
-                "Đang tạo...",
-              )
-
-                  : SelectableText(
-                pairToken,
-              ),
-            ),
-
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20,),
 
             TextField(
               controller:
@@ -282,9 +220,7 @@ class _AddDeviceScreenState
               ),
             ),
 
-            const SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 12,),
 
             TextField(
               controller:
@@ -301,42 +237,28 @@ class _AddDeviceScreenState
               ),
             ),
 
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20,),
 
             SizedBox(
-
               width:
               double.infinity,
-
               child:
               ElevatedButton(
 
                 onPressed:
-                loading
-                    ? null
-                    : setupDevice,
+                loading ? null : setupDevice,
 
-                child:
-                loading
-
-                    ? const SizedBox(
+                child: loading ? const SizedBox(
                   height: 20,
                   width: 20,
                   child:
                   CircularProgressIndicator(),
                 )
-
-                    : const Text(
-                  "Gửi cấu hình",
-                ),
+                    : const Text("Gửi cấu hình",),
               ),
             ),
 
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20,),
 
             const Text(
               "Lưu ý:\n"

@@ -8,18 +8,13 @@ import 'schedule_screen.dart';
 class DeviceDetailScreen extends StatefulWidget {
   final Device device;
 
-  const DeviceDetailScreen({
-    super.key,
-    required this.device,
-  });
+  const DeviceDetailScreen({super.key, required this.device,});
 
   @override
-  State<DeviceDetailScreen> createState() =>
-      _DeviceDetailScreenState();
+  State<DeviceDetailScreen> createState() => _DeviceDetailScreenState();
 }
 
-class _DeviceDetailScreenState
-    extends State<DeviceDetailScreen> {
+class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
   List<DeviceGuest> guests = [];
 
   bool loading = true;
@@ -32,81 +27,51 @@ class _DeviceDetailScreenState
 
   Future<void> loadGuests() async {
     try {
-      guests = await DeviceService()
-          .getGuests(
+      guests = await DeviceService().getGuests(
         widget.device.id,
       );
     } catch (_) {}
 
     if (!mounted) return;
-
-    setState(() {
-      loading = false;
-    });
+    setState(() {loading = false;});
   }
 
   Future<void> renameDevice() async {
-    final controller =
-    TextEditingController(
-      text: widget.device.name,
-    );
+    final controller = TextEditingController(text: widget.device.name,);
 
-    final name =
-    await showDialog<String>(
+    final name = await showDialog<String>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text(
-          "Đổi tên thiết bị",
-        ),
-        content: TextField(
-          controller: controller,
-        ),
+        title: const Text("Đổi tên thiết bị",),
+        content: TextField(controller: controller,),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text(
-              "Hủy",
-            ),
+            onPressed: () {Navigator.pop(context);},
+            child: const Text("Hủy",),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(
-                context,
-                controller.text,
-              );
+              Navigator.pop(context, controller.text,);
             },
-            child: const Text(
-              "Lưu",
-            ),
+            child: const Text("Lưu",),
           ),
         ],
       ),
     );
 
-    if (name == null ||
-        name.trim().isEmpty) {
+    if (name == null || name.trim().isEmpty) {
       return;
     }
 
-    await DeviceService()
-        .renameDevice(
-      widget.device.id,
-      name,
-    );
+    await DeviceService().renameDevice(widget.device.id, name,);
 
-    setState(() {
-      widget.device.name = name;
-    });
+    setState(() {widget.device.name = name;});
   }
 
   Future<void> shareDevice() async {
-    final controller =
-    TextEditingController();
+    final controller = TextEditingController();
 
-    final email =
-    await showDialog<String>(
+    final email = await showDialog<String>(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text(
@@ -143,16 +108,11 @@ class _DeviceDetailScreenState
       ),
     );
 
-    if (email == null ||
-        email.trim().isEmpty) {
+    if (email == null || email.trim().isEmpty) {
       return;
     }
 
-    await DeviceService()
-        .shareDevice(
-      widget.device.id,
-      email,
-    );
+    await DeviceService().shareDevice(widget.device.id, email,);
 
     loadGuests();
   }
@@ -176,11 +136,7 @@ class _DeviceDetailScreenState
           widget.device.name,
         ),
       ),
-      body: loading
-          ? const Center(
-        child:
-        CircularProgressIndicator(),
-      )
+      body: loading ? const Center(child: CircularProgressIndicator(),)
           : ListView(
         children: [
           Card(
@@ -190,26 +146,15 @@ class _DeviceDetailScreenState
             ),
             child: Column(
               children: [
-                ListTile(
-                  leading: const Icon(
-                    Icons.devices,
-                  ),
-                  title: const Text(
-                    "Tên thiết bị",
-                  ),
-                  subtitle: Text(
-                    widget.device.name,
-                  ),
+                ListTile(leading: const Icon(Icons.devices,),
+                  title: const Text("Tên thiết bị",),
+                  subtitle: Text(widget.device.name,),
                 ),
                 const Divider(),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.qr_code,
-                  ),
-                  title: const Text(
-                    "Device Code",
-                  ),
+                  leading: const Icon(Icons.qr_code,),
+                  title: const Text("Device Code",),
                   subtitle: Text(
                     widget.device
                         .deviceCode,
@@ -218,15 +163,9 @@ class _DeviceDetailScreenState
                 const Divider(),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.category,
-                  ),
-                  title: const Text(
-                    "Loại",
-                  ),
-                  subtitle: Text(
-                    widget.device.type,
-                  ),
+                  leading: const Icon(Icons.category,),
+                  title: const Text("Loại",),
+                  subtitle: Text(widget.device.type,),
                 ),
                 const Divider(),
 
@@ -234,9 +173,7 @@ class _DeviceDetailScreenState
                   leading: const Icon(
                     Icons.power,
                   ),
-                  title: const Text(
-                    "Trạng thái",
-                  ),
+                  title: const Text("Trạng thái",),
                   subtitle: Text(
                     widget.device.status,
                   ),
@@ -244,32 +181,17 @@ class _DeviceDetailScreenState
                 const Divider(),
 
                 ListTile(
-                  leading: Icon(
-                    widget.device
-                        .online
-                        ? Icons.wifi
-                        : Icons
-                        .wifi_off,
-                  ),
+                  leading: Icon(widget.device.online ? Icons.wifi : Icons.wifi_off,),
                   title: const Text(
                     "Kết nối",
                   ),
-                  subtitle: Text(
-                    widget.device
-                        .online
-                        ? "Online"
-                        : "Offline",
-                  ),
+                  subtitle: Text(widget.device.online ? "Online" : "Offline",),
                 ),
                 const Divider(),
 
                 ListTile(
-                  leading: const Icon(
-                    Icons.person,
-                  ),
-                  title: const Text(
-                    "Vai trò",
-                  ),
+                  leading: const Icon(Icons.person,),
+                  title: const Text("Vai trò",),
                   subtitle: Text(
                     widget.device.role,
                   ),
@@ -282,8 +204,7 @@ class _DeviceDetailScreenState
             leading: const Icon(
               Icons.edit,
             ),
-            title: const Text(
-              "Đổi tên thiết bị",
+            title: const Text("Đổi tên thiết bị",
             ),
             onTap: renameDevice,
           ),
@@ -332,25 +253,14 @@ class _DeviceDetailScreenState
           ...guests.map(
                 (guest) => ListTile(
               leading:
-              const Icon(
-                Icons.person,
-              ),
-              title: Text(
-                guest.username,
-              ),
-              subtitle: Text(
-                guest.email,
-              ),
+              const Icon(Icons.person,),
+              title: Text(guest.username,),
+              subtitle: Text(guest.email,),
               trailing:
               IconButton(
                 icon:
-                const Icon(
-                  Icons.delete,
-                ),
-                onPressed: () {
-                  deleteGuest(
-                      guest);
-                },
+                const Icon(Icons.delete,),
+                onPressed: () {deleteGuest(guest);},
               ),
             ),
           ),

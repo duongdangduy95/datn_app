@@ -11,21 +11,12 @@ class DeviceService {
 
 
     final response =
-    await ApiClient.dio.get(
-      "/api/devices/my",
-    );
+    await ApiClient.dio.get("/api/devices/my",);
 
-    return (response.data as List)
-        .map(
-          (e) => Device.fromJson(e),
-    )
-        .toList();
+    return (response.data as List).map((e) => Device.fromJson(e),).toList();
   }
 
-  Future<void> controlDevice(
-      int id,
-      bool state,
-      ) async {
+  Future<void> controlDevice(int id, bool state,) async {
 
     try {
 
@@ -36,7 +27,6 @@ class DeviceService {
           "state": state,
         },
       );
-
       print("STATUS = ${response.statusCode}");
       print("DATA = ${response.data}");
 
@@ -50,10 +40,7 @@ class DeviceService {
     }
   }
 
-  Future<void> renameDevice(
-      int deviceId,
-      String name,
-      ) async {
+  Future<void> renameDevice(int deviceId, String name,) async {
 
     await ApiClient.dio.post(
       "/api/devices/rename",
@@ -64,10 +51,7 @@ class DeviceService {
     );
   }
 
-  Future<void> shareDevice(
-      int deviceId,
-      String email,
-      ) async {
+  Future<void> shareDevice(int deviceId, String email,) async {
 
     await ApiClient.dio.post(
       "/api/devices/share",
@@ -82,31 +66,18 @@ class DeviceService {
       int deviceId) async {
 
     final response =
-    await ApiClient.dio.get(
-      "/api/devices/$deviceId/guests",
-    );
+    await ApiClient.dio.get("/api/devices/$deviceId/guests",);
 
-    return (response.data as List)
-        .map(
-          (e) =>
-          DeviceGuest.fromJson(e),
-    )
-        .toList();
+    return (response.data as List).map((e) => DeviceGuest.fromJson(e),).toList();
   }
 
-  Future<void> removeGuest(
-      int deviceId,
-      int guestUserId,
-      ) async {
-
+  Future<void> removeGuest(int deviceId, int guestUserId,) async {
     await ApiClient.dio.delete(
       "/api/devices/$deviceId/guest/$guestUserId",
     );
   }
 
-  Future<DeviceSchedule> createSchedule(
-      Map<String, dynamic> body) async {
-
+  Future<DeviceSchedule> createSchedule(Map<String, dynamic> body) async {
     final response = await ApiClient.dio.post(
       "/api/schedule",
       data: body,

@@ -25,7 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-      print("🚀 [FLUTTER] Đang gửi yêu cầu đăng ký lên Render...");
+      print("[FLUTTER] Đang gửi yêu cầu đăng ký lên Render...");
 
       await AuthService().register(
         usernameController.text.trim(),
@@ -50,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } catch (e) {
       // 🌟 ĐÂY LÀ CHÌA KHÓA: In trực tiếp lỗi ra Console để xem Dio đang bị gãy ở đâu!
-      print("❌ [FLUTTER] LỖI HOÀN TOÀN TRONG KHỐI CATCH: $e");
+      print(" LỖI HOÀN TOÀN TRONG KHỐI CATCH: $e");
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

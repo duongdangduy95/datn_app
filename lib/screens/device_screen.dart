@@ -64,17 +64,14 @@ class _DeviceScreenState extends State<DeviceScreen> {
         builder: (context, setDialogState) {
 
           return AlertDialog(
-            title: Text(
-              "Lịch của ${device.name}",
+            title: Text("Lịch của ${device.name}",
             ),
 
             content: SizedBox(
               width: double.maxFinite,
               height: 400,
 
-              child: schedules.isEmpty
-                  ? const Center(
-                child: Text("Chưa có lịch"),
+              child: schedules.isEmpty ? const Center(child: Text("Chưa có lịch"),
               )
 
                   : ListView.builder(
@@ -86,7 +83,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
 
                   return Card(
                     child: ListTile(
-
                       title: Text(
                         "${s['startTime']} → ${s['endTime']}",
                       ),
@@ -104,10 +100,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
 
                         onPressed: () async {
 
-                          await DeviceService()
-                              .deleteSchedule(
-                            s['id'],
-                          );
+                          await DeviceService().deleteSchedule(s['id'],);
 
                           schedules.removeAt(index);
 
@@ -183,7 +176,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       final result = await voiceService.controlByVoice(audioPath);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message)), // ✅ đúng
+        SnackBar(content: Text(result.message)),
       );
 
       if (result.success) {
@@ -321,18 +314,14 @@ class _DeviceScreenState extends State<DeviceScreen> {
             //   "Code: ${device.deviceCode}",
             // ),
 
-            Text(
-              "Type: ${device.type}",
+            Text("Type: ${device.type}",
             ),
 
             // Text(
             //   "Role: ${device.role}",
             // ),
 
-            Text(
-              device.online
-                  ? "Online"
-                  : "Offline",
+            Text(device.online? "Online" : "Offline",
             ),
           ],
         ),
@@ -502,11 +491,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
         child:
         CircularProgressIndicator(),
       )
-          : devices.isEmpty
-          ? const Center(
-        child: Text(
-          "Chưa có thiết bị",
-        ),
+          : devices.isEmpty ? const Center(
+        child: Text("Chưa có thiết bị",),
       )
           : RefreshIndicator(
         onRefresh: loadData,

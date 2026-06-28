@@ -17,11 +17,11 @@ class VerifyScreen extends StatefulWidget {
 class _VerifyScreenState extends State<VerifyScreen> {
   final otpController = TextEditingController();
 
-  // 🌟 THÊM 1: Biến quản lý trạng thái Loading để tránh User bấm dồn dập
+  //  Biến quản lý trạng thái Loading để tránh User bấm dồn dập
   bool _isLoading = false;
 
   Future<void> verify() async {
-    // 🌟 THÊM 2: Kiểm tra dữ liệu rỗng trước khi gọi API
+    // Kiểm tra dữ liệu rỗng trước khi gọi API
     if (otpController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Vui lòng nhập mã OTP")),
@@ -34,7 +34,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     });
 
     try {
-      print("🚀 [FLUTTER] Đang gửi OTP lên Render để xác thực...");
+      print("[FLUTTER] Đang gửi OTP lên Render để xác thực...");
 
       await AuthService().verify(
         widget.email,
@@ -66,7 +66,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             (route) => false,
       );
     } catch (e) {
-      print("❌ [FLUTTER] Lỗi tại màn hình Verify: $e");
+      print(" [FLUTTER] Lỗi tại màn hình Verify: $e");
 
       if (!mounted) return;
 
@@ -74,7 +74,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
         _isLoading = false; // Tắt loading khi gặp lỗi để User nhập lại
       });
 
-      // 🌟 THÊM 3: Bọc mounted an toàn cho khối báo lỗi
+      //  Bọc mounted an toàn cho khối báo lỗi
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Xác thực thất bại: ${e.toString()}"),

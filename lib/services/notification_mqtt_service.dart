@@ -10,33 +10,22 @@ class NotificationMqttService {
 
   Future<void> connect(int userId) async {
 
-    client = MqttServerClient(
-      "broker.hivemq.com",
-      "flutter_$userId",
-    );
+    client = MqttServerClient("broker.hivemq.com", "flutter_$userId",);
 
     client.port = 1883;
     client.keepAlivePeriod = 20;
 
-    client.connectionMessage =
-        MqttConnectMessage()
-            .withClientIdentifier("flutter_$userId")
-            .startClean();
+    client.connectionMessage = MqttConnectMessage().withClientIdentifier("flutter_$userId").startClean();
 
     await client.connect();
 
-    client.subscribe(
-      "users/$userId/notifications",
-      MqttQos.atLeastOnce,
-    );
+    client.subscribe("users/$userId/notifications", MqttQos.atLeastOnce,);
 
     client.updates!.listen((messages) {
 
       final recMess = messages[0].payload as MqttPublishMessage;
 
-      final payload =
-      MqttPublishPayload.bytesToStringAsString(
-          recMess.payload.message);
+      final payload = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
       final data = jsonDecode(payload);
 
